@@ -73,4 +73,73 @@
   
 */
 
+#include <stdio.h>
+#include <stdlib.h>
+#include "arvore.h"
+
+// funcao de criação nos Nodes
+MorseNode* criarNo(char caractere) {
+    MorseNode *novo = (MorseNode*) malloc(sizeof(MorseNode));
+    if (novo != NULL) {
+        novo->caractere = caractere;
+        novo->esquerda = NULL;
+        novo->direita = NULL;
+    }
+    return novo;
+}
+
+// insere um caractere navegando pelos pontos e traços
+void inserir(MorseNode *raiz, const char *codigo, char caractere) {
+    MorseNode *atual = raiz; // Começa sempre do topo
+
+    for (int i = 0; codigo[i] != '\0'; i++) {
+        if (codigo[i] == '.') {
+            // se o node da esquerda for inexistente, ele o cria
+            if (atual->esquerda == NULL) {
+                atual->esquerda = criarNo(' ');
+            }
+            atual = atual->esquerda; // se move para o filho a esquerda 
+        } 
+        else if (codigo[i] == '-') {
+            // se o node da direita for inexistente, ele o cria
+            if (atual->direita == NULL) {
+                atual->direita = criarNo(' ');
+            }
+            atual = atual->direita; // se move para o filho a direita
+        }
+    }
+    // grava o caractere no node alcançado
+    atual->caractere = caractere;
+}
+
+// decodifica caracter recebido
+char decodificarSimbolo(MorseNode *raiz, const char *codigo) {
+    MorseNode *atual = raiz;
+
+    for (int i = 0; codigo[i] != '\0'; i++) {
+        if (codigo[i] == '.') {
+            if (atual->esquerda == NULL) return '?'; // nada nessa direcao
+            atual = atual->esquerda;
+        } 
+        else if (codigo[i] == '-') {
+            if (atual->direita == NULL) return '?'; // nada nessa direcao
+            atual = atual->direita;
+        }
+    }
+
+    // retorna o caractere armazenado naquele node
+    return atual->caractere;
+}
+
+// Libera a memória alocada (boa prática essencial em C)
+void liberarArvore(MorseNode *raiz) {
+    if (raiz == NULL) return;
+    liberarArvore(raiz->esquerda);
+    liberarArvore(raiz->direita);
+    free(raiz);
+}
+
+
+
+
 
