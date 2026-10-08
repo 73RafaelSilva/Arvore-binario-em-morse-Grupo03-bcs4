@@ -4,7 +4,6 @@
  * */
 
 #include "morse.h"
-#include <ctype.h> // para a funcao toupper() e deixar todos os caracteres maiusculos
 
 // Definição real da variável global na memória
 const morse_map TABELA_MORSE[TOTAL_SIMBOLOS] = {
@@ -71,17 +70,14 @@ const morse_map TABELA_MORSE[TOTAL_SIMBOLOS] = {
     { '7', "--..."},
     { '8', "---.."},
     { '9', "----."},
-    {62, '+', ".-.-."},
-    {63, '/', "-..-."},
-    // --- Separador de Palavras ---
-    {' ', "/"}
+    { '+', ".-.-."},
+    { '/', "-..-."},
 };
 
 // pega o codigo morse dos caracteres pedidos
 const char* obter_codigo_morse(char c) {
-    char maiusculo = (char)toupper(c);
     for (int i = 0; i < TOTAL_SIMBOLOS; i++) {
-        if (TABELA_MORSE[i].caractere == maiusculo) {
+        if (TABELA_MORSE[i].caractere == c) {
             return TABELA_MORSE[i].codigo;
         }
     }

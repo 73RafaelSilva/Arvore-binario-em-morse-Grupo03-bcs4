@@ -8,18 +8,18 @@
 #include "arvore.h"
 
 // funcao de criação nos Nodes
-MorseNode* criar_node(char caractere) {
+MorseNode* criar_node(char caracter) {
     MorseNode *novo = (MorseNode*) malloc(sizeof(MorseNode));
     if (novo != NULL) {
-        novo->caractere = caractere;
+        novo->caracter = caracter;
         novo->esquerda = NULL;
         novo->direita = NULL;
     }
     return novo;
 }
 
-// insere um caractere navegando pelos pontos e traços
-void inserir(MorseNode *raiz, const char *codigo, char caractere) {
+// insere um caracter navegando pelos pontos e traços
+void inserir(MorseNode *raiz, const char *codigo, char caracter) {
     MorseNode *atual = raiz; // Começa sempre do topo
 
     for (int i = 0; codigo[i] != '\0'; i++) {
@@ -38,8 +38,8 @@ void inserir(MorseNode *raiz, const char *codigo, char caractere) {
             atual = atual->direita; // se move para o filho a direita
         }
     }
-    // grava o caractere no node alcançado
-    atual->caractere = caractere;
+    // grava o caracter no node alcançado
+    atual->caracter = caracter;
 }
 
 // decodifica caracter recebido
@@ -57,8 +57,8 @@ char decodificar_simbolo(MorseNode *raiz, const char *codigo) {
         }
     }
 
-    // retorna o caractere armazenado naquele node
-    return atual->caractere;
+    // retorna o caracter armazenado naquele node
+    return atual->caracter;
 }
 
 // Libera a memória alocada (boa prática essencial em C)

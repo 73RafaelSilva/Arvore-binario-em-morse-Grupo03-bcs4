@@ -16,7 +16,7 @@ typedef struct MorseNode {
 } MorseNode;
 
 // funcoes
-MorseNode* criar_node(char caractere);
+MorseNode* criar_node(char caracter);
 void inserir(MorseNode *raiz, const char *codigo, char caractere);
 char decodificar_simbolo(MorseNode *raiz, const char *codigo);
 void liberar_arvore(MorseNode *raiz);

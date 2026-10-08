@@ -13,7 +13,7 @@ typedef struct {
 } morse_map;
 
 // limita a 64 caracteres, já que estamos usando o alfabeto de base 64
-#define TOTAL_SIMBOLOS 64;
+#define TOTAL_SIMBOLOS 64
 
 
 // declara existencia do MorseMap com TOTAL_SIMBOLOS posições
