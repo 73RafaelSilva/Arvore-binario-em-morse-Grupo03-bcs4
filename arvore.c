@@ -1,76 +1,6 @@
-/*  
-  Neste arquivo consta nossa arvore binária onde se encontram todos o alfabeto organizado na arvore, de maneira que as consultas realizadas em binário cheguem ao caracter correspondente.
-
-  Esta arvore se limita aos caracteres base64
-
-  alfabeto e representação em morse:
-
-     , .-.-
-    A, .-
-    B, -...
-    C, -.-.
-    D, -..
-    E, .
-    F, ..-.
-    G, --.
-    H, ....
-    I, ..
-    J, .---
-    K, -.-
-    L, .-..
-    M, --
-    N, -.
-    O, ---
-    P, .--.
-    Q, --.-
-    R, .-.
-    S, ...
-    T, -
-    U, ..-
-    V, ...-
-    W, .--
-    X, -..-
-    Y, -.--
-    Z, --..
-    0, -----
-    1, .----
-    2, ..---
-    3, ...--
-    4, ....-
-    5, .....
-    6, -....
-    7, --...
-    8, ---..
-    9, ----.
-    ., .-.-.-
-    ,, --..--
-    ?, ..--..
-    ', .----.
-    !, -.-.--
-    (, -.--.
-    ), -.--.-
-    &, .-...
-    :, ---...
-    ;, -.-.-.
-    =, -...-
-    +, .-.-.
-    -, -....-
-    _, ..--.-
-    ", .-..-.
-    $, ...-..-
-    @, .--.-.
-    ¿, ..-.-
-    ¡, --...-
-    À, .--.-
-    Å, .--.-
-    Ä, .-.-
-    É, ..-..
-    Ñ, --.--
-    Ö, ---.
-    Ü, ..--
-    %, ----- -..-. -----
-    #, ...-.-
-  
+/*
+* Neste arquivo consta nossa arvore binária onde se encontram todos o alfabeto organizado na arvore, de maneira que as consultas realizadas em binário cheguem ao caracter correspondente.
+*
 */
 
 #include <stdio.h>
@@ -78,7 +8,7 @@
 #include "arvore.h"
 
 // funcao de criação nos Nodes
-MorseNode* criarNo(char caractere) {
+MorseNode* criar_node(char caractere) {
     MorseNode *novo = (MorseNode*) malloc(sizeof(MorseNode));
     if (novo != NULL) {
         novo->caractere = caractere;
@@ -96,14 +26,14 @@ void inserir(MorseNode *raiz, const char *codigo, char caractere) {
         if (codigo[i] == '.') {
             // se o node da esquerda for inexistente, ele o cria
             if (atual->esquerda == NULL) {
-                atual->esquerda = criarNo(' ');
+                atual->esquerda = criar_node(' ');
             }
             atual = atual->esquerda; // se move para o filho a esquerda 
         } 
         else if (codigo[i] == '-') {
             // se o node da direita for inexistente, ele o cria
             if (atual->direita == NULL) {
-                atual->direita = criarNo(' ');
+                atual->direita = criar_node(' ');
             }
             atual = atual->direita; // se move para o filho a direita
         }
@@ -113,7 +43,7 @@ void inserir(MorseNode *raiz, const char *codigo, char caractere) {
 }
 
 // decodifica caracter recebido
-char decodificarSimbolo(MorseNode *raiz, const char *codigo) {
+char decodificar_simbolo(MorseNode *raiz, const char *codigo) {
     MorseNode *atual = raiz;
 
     for (int i = 0; codigo[i] != '\0'; i++) {
@@ -132,10 +62,10 @@ char decodificarSimbolo(MorseNode *raiz, const char *codigo) {
 }
 
 // Libera a memória alocada (boa prática essencial em C)
-void liberarArvore(MorseNode *raiz) {
+void liberar_arvore(MorseNode *raiz) {
     if (raiz == NULL) return;
-    liberarArvore(raiz->esquerda);
-    liberarArvore(raiz->direita);
+    liberar_arvore(raiz->esquerda);
+    liberar_arvore(raiz->direita);
     free(raiz);
 }
 
