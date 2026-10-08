@@ -10,16 +10,16 @@
 typedef struct {
     char caractere;
     const char *codigo;
-} MorseMap;
+} morse_map;
 
 // limita a 64 caracteres, já que estamos usando o alfabeto de base 64
-#define TOTAL_SIMBOLOS 64
+#define TOTAL_SIMBOLOS 64;
 
 
 // declara existencia do MorseMap com TOTAL_SIMBOLOS posições
-extern const MorseMap TABELA_MORSE[TOTAL_SIMBOLOS];
+extern const morse_map TABELA_MORSE[TOTAL_SIMBOLOS];
 
 // Protótipo de função para buscar o código de um caractere
-const char* obterCodigoMorse(char c);
+const char* obter_codigo_morse(char c);
 
 #endif
