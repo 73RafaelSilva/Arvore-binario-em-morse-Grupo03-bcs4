@@ -22,5 +22,6 @@ void inserir(MorseNode *raiz, const char *codigo, char caractere);
 char decodificar_simbolo(MorseNode *raiz, const char *codigo);
 void liberar_arvore(MorseNode *raiz);
 int codificar_caractere_pela_arvore(MorseNode *raiz, char c, char *buffer_saida);
+void exibir_arvore(MorseNode *raiz);
 
 #endif

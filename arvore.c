@@ -134,6 +134,45 @@ char decodificar_simbolo(MorseNode *raiz, const char *codigo) {
     return atual->caracter;
 }
 
+// imprime a arvore de forma hierarquica no terminal
+void imprimir_arvore_rec(MorseNode *node, int nivel, char direcao) {
+    if (node == NULL) return;
+
+    // 1. Visita o ramo da direita (-) primeiro (imprime no topo da tela)
+    imprimir_arvore_rec(node->direita, nivel + 1, '-');
+
+    // 2. Imprime a identacao de acordo com a profundidade
+    for (int i = 0; i < nivel; i++) {
+        printf("       ");
+    }
+
+    // Identifica se e raiz ou ramo
+    if (nivel == 0) {
+        printf("[RAIZ]\n");
+    } else {
+        // Exibe a conexao (.) ou (-) e o caracter do no
+        if (node->caracter == ' ') {
+            printf("(%c)--> [ ]\n", direcao); // no intermediario sem letra
+        } else {
+            printf("(%c)--> ['%c']\n", direcao, node->caracter);
+        }
+    }
+
+    // 3. Visita o ramo da esquerda (.) depois (imprime abaixo na tela)
+    imprimir_arvore_rec(node->esquerda, nivel + 1, '.');
+}
+
+void exibir_arvore(MorseNode *raiz) {
+    if (raiz == NULL) {
+        printf("\n[Aviso] Arvore vazia.\n");
+        return;
+    }
+    printf("\n========= ESTRUTURA VISUAL DA ARVORE MORSE =========\n");
+    printf(" (.) = Subarvore Esquerda | (-) = Subarvore Direita\n\n");
+    imprimir_arvore_rec(raiz, 0, ' ');
+    printf("\n====================================================\n");
+}
+
 // Libera a memória alocada (boa prática essencial em C)
 void liberar_arvore(MorseNode *raiz) {
     if (raiz == NULL) return;

@@ -24,7 +24,7 @@
 #include "arvore.h"
 #include <string.h>
 #include "plantacao.h"
-#include "fileserver.h"
+#include "fileservice.h"
 
 // declara funcoes a chamar no correr do codiguin
 void menu_terminal(MorseNode *raiz);
@@ -157,13 +157,12 @@ void executar_decodificar_arquivo(MorseNode *raiz) {
 }
 
 void executar_codificar_arquivo(MorseNode *raiz) {
-  codificar_arquivo_texto(raiz, "texto.txt")
+  codificar_arquivo_texto(raiz, "texto.txt");
 }
 
 // Stub para exibir a árvore (Requisito obrigatório do PDF)
 void executar_mostrar_arvore(MorseNode *raiz) {
-    (void)raiz;
-    printf("\n[STUB] Opcao 3: Mostrar diagrama da arvore no terminal.\n");
+  exibir_arvore(raiz);
 }
 
 // limpa as entradas do teclado das váriáveis
