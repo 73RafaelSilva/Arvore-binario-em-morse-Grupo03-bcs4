@@ -22,33 +22,142 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "arvore.h"
+#include <string.h>
 #include "plantacao.h"
+#include "fileserver.h"
 
-// --- ESQUELETOS DAS FUNÇÕES QUE IMPLEMENTAREMOS DEPOIS ---
+// declara funcoes a chamar no correr do codiguin
 void menu_terminal(MorseNode *raiz);
 void menu_arquivos(MorseNode *raiz);
 void limpar_buffer(void);
 
-// Stubs para o menu de terminal
+// codiguin de decodificacao via terminal varrendo a arvore da raiz ate o caracer esperado, a partir das instruções em morse
 void executar_decodificar_terminal(MorseNode *raiz) {
-    (void)raiz; // Evita warning de parâmetro não utilizado no momento
-    printf("\n[STUB] Opcao 1.1: Decodificar Morse digitado.\n");
+  char linha[1024];
+  printf("\nDigite a sequencia Morse (ex: ... --- ... ou --- .-.. .- / -- ..- -. -.. ---):\n> ");
+
+  if (fgets(linha, sizeof(linha), stdin) == NULL) {
+      printf("Erro ao ler entrada.\n");
+      return;
+  }
+
+  linha[strcspn(linha, "\n")] = '\0';
+
+  if (strlen(linha) == 0) {
+      printf("Nenhuma sequencia informada.\n");
+      return;
+  }
+
+  // buffers para separar o texto final decodificado dos caracteres invalidos
+  char resultado[1024];
+  int res_idx = 0;
+
+  char erros[256];
+  int erros_idx = 0;
+
+  char token[16];
+  int token_idx = 0;
+
+  for (int i = 0; linha[i] != '\0'; i++) {
+      char c = linha[i];
+
+      if (c == '.' || c == '-') {
+          if (token_idx < 15) {
+              token[token_idx++] = c;
+          }
+      } 
+      else if (c == ' ') {
+          // fim da letra
+          if (token_idx > 0) {
+              token[token_idx] = '\0';
+              char decodificado = decodificar_simbolo(raiz, token);
+              resultado[res_idx++] = decodificado;
+              token_idx = 0;
+          }
+      } 
+      else if (c == '/') {
+          // achow um espaco
+          if (token_idx > 0) {
+              token[token_idx] = '\0';
+              char decodificado = decodificar_simbolo(raiz, token);
+              resultado[res_idx++] = decodificado;
+              token_idx = 0;
+          }
+          resultado[res_idx++] = ' ';
+      }
+      else {
+          // guarda o simbolo invalido para tratar e printar apenas no final conforme a secao 3.1
+          if (erros_idx < 255) {
+              erros[erros_idx++] = c;
+          }
+      }
+  }
+
+  // Se a linha terminou sem espaco no final, descarrega a ultima letra
+  if (token_idx > 0) {
+      token[token_idx] = '\0';
+      char decodificado = decodificar_simbolo(raiz, token);
+      resultado[res_idx++] = decodificado;
+  }
+
+  resultado[res_idx] = '\0';
+  erros[erros_idx] = '\0';
+
+  // imprime a resposta completa
+  printf("\nTexto decodificado: %s\n", resultado);
+
+  // apresenta os avisos de erro encontrados agrupados ao final
+  if (erros_idx > 0) {
+      printf("\n");
+      for (int i = 0; i < erros_idx; i++) {
+          printf("[Aviso: caractere invalido '%c' ignorado]\n", erros[i]);
+      }
+  }
 }
 
+// codiguin de codificar, varrendo arvore, achando caracter e subindo ate a raiz para descobrir o caminho do morse
 void executar_codificar_terminal(MorseNode *raiz) {
-    (void)raiz;
-    printf("\n[STUB] Opcao 1.2: Codificar texto digitado.\n");
+  char texto[512];
+  printf("\nDigite o texto para codificar: ");
+  
+  // fgets le a linha inteira incluindo espacos
+  if (fgets(texto, sizeof(texto), stdin) == NULL) {
+      printf("Erro ao ler entrada.\n");
+      return;
+  }
+  
+  // remove o '\n' do final capturado pelo fgets
+  texto[strcspn(texto, "\n")] = '\0';
+  if (strlen(texto) == 0) {
+      printf("Nenhum texto informado.\n");
+      return;
+  }
+
+  printf("\nTexto em Morse:\n");
+  char buffer_codigo[16];
+
+  for (int i = 0; texto[i] != '\0'; i++) {
+      if (texto[i] == ' ') {
+          // substitui espaco entre palavras com '/'
+          printf("/ ");
+      } else {
+          if (codificar_caractere_pela_arvore(raiz, texto[i], buffer_codigo)) {
+              printf("%s ", buffer_codigo);
+          } else {
+              printf("? "); // Caractere desconhecido/invalido
+          }
+      }
+  }
+  printf("\n");
 }
 
 // Stubs para o menu de arquivos
 void executar_decodificar_arquivo(MorseNode *raiz) {
-    (void)raiz;
-    printf("\n[STUB] Opcao 2.1: Decodificar arquivo 'morse.txt'.\n");
+  decodificar_arquivo_morse(raiz, "morse.txt");
 }
 
 void executar_codificar_arquivo(MorseNode *raiz) {
-    (void)raiz;
-    printf("\n[STUB] Opcao 2.2: Codificar arquivo 'texto.txt'.\n");
+  codificar_arquivo_texto(raiz, "texto.txt")
 }
 
 // Stub para exibir a árvore (Requisito obrigatório do PDF)
@@ -63,7 +172,7 @@ void limpar_buffer(void) {
     while ((c = getchar()) != '\n' && c != EOF);
 }
 
-// menu princpal de onde o codigo gira em torno 
+// menu princpal de onde o codiguin gira em torno 
 int main(void) {
     printf("Iniciando o sistema...\n");
     MorseNode *raiz = plantar_arvore_morse();
