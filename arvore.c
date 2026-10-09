@@ -46,7 +46,6 @@ void inserir(MorseNode *raiz, const char *codigo, char caracter) {
     atual->caracter = caracter;
 }
 
-
 // varre a arvore em pre-ordem ate encontrar o caracter desejado para cofigicar
 MorseNode* buscar_node(MorseNode *raiz, char caracter) {
     if (raiz == NULL) return NULL;
@@ -134,6 +133,78 @@ char decodificar_simbolo(MorseNode *raiz, const char *codigo) {
     return atual->caracter;
 }
 
+// decodifica uma sequencia completa de morse separando caracteres e guardando erros encontrados
+void decodificar_texto_morse(MorseNode *raiz, const char *linha, char *resultado, char *erros) {
+    int res_idx = 0;
+    int erros_idx = 0;
+    char token[16];
+    int token_idx = 0;
+
+    for (int i = 0; linha[i] != '\0'; i++) {
+        char c = linha[i];
+
+        if (c == '.' || c == '-') {
+            if (token_idx < 15) {
+                token[token_idx++] = c;
+            }
+        } 
+        else if (c == ' ') {
+            // fim da letra
+            if (token_idx > 0) {
+                token[token_idx] = '\0';
+                char decodificado = decodificar_simbolo(raiz, token);
+                resultado[res_idx++] = decodificado;
+                token_idx = 0;
+            }
+        } 
+        else if (c == '/') {
+            // achow um espaco
+            if (token_idx > 0) {
+                token[token_idx] = '\0';
+                char decodificado = decodificar_simbolo(raiz, token);
+                resultado[res_idx++] = decodificado;
+                token_idx = 0;
+            }
+            resultado[res_idx++] = ' ';
+        }
+        else {
+            // guarda o simbolo invalido para tratar e printar apenas no final conforme a secao 3.1
+            if (erros_idx < 255) {
+                erros[erros_idx++] = c;
+            }
+        }
+    }
+
+    // Se a linha terminou sem espaco no final, descarrega a ultima letra
+    if (token_idx > 0) {
+        token[token_idx] = '\0';
+        char decodificado = decodificar_simbolo(raiz, token);
+        resultado[res_idx++] = decodificado;
+    }
+
+    resultado[res_idx] = '\0';
+    erros[erros_idx] = '\0';
+}
+
+// codifica uma string de texto completa diretamente para morse varrendo caractere a caractere
+void codificar_texto_para_morse(MorseNode *raiz, const char *texto) {
+    char buffer_codigo[16];
+
+    for (int i = 0; texto[i] != '\0'; i++) {
+        if (texto[i] == ' ') {
+            // substitui espaco entre palavras com '/'
+            printf("/ ");
+        } else {
+            if (codificar_caractere_pela_arvore(raiz, texto[i], buffer_codigo)) {
+                printf("%s ", buffer_codigo);
+            } else {
+                printf("? ");
+            }
+        }
+    }
+    printf("\n");
+}
+
 // imprime a arvore de forma hierarquica no terminal
 void imprimir_arvore_rec(MorseNode *node, int nivel, char direcao) {
     if (node == NULL) return;
@@ -180,8 +251,3 @@ void liberar_arvore(MorseNode *raiz) {
     liberar_arvore(raiz->direita);
     free(raiz);
 }
-
-
-
-
-

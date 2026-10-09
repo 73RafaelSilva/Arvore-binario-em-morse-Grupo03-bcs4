@@ -63,60 +63,15 @@ void executar_decodificar_terminal(MorseNode *raiz) {
     }
 
     char resultado[1024];
-    int res_idx = 0;
-
     char erros[256];
-    int erros_idx = 0;
 
-    char token[16];
-    int token_idx = 0;
-
-    for (int i = 0; linha[i] != '\0'; i++) {
-        char c = linha[i];
-
-        if (c == '.' || c == '-') {
-            if (token_idx < 15) {
-                token[token_idx++] = c;
-            }
-        } 
-        else if (c == ' ') {
-            if (token_idx > 0) {
-                token[token_idx] = '\0';
-                char decodificado = decodificar_simbolo(raiz, token);
-                resultado[res_idx++] = decodificado;
-                token_idx = 0;
-            }
-        } 
-        else if (c == '/') {
-            if (token_idx > 0) {
-                token[token_idx] = '\0';
-                char decodificado = decodificar_simbolo(raiz, token);
-                resultado[res_idx++] = decodificado;
-                token_idx = 0;
-            }
-            resultado[res_idx++] = ' ';
-        }
-        else {
-            if (erros_idx < 255) {
-                erros[erros_idx++] = c;
-            }
-        }
-    }
-
-    if (token_idx > 0) {
-        token[token_idx] = '\0';
-        char decodificado = decodificar_simbolo(raiz, token);
-        resultado[res_idx++] = decodificado;
-    }
-
-    resultado[res_idx] = '\0';
-    erros[erros_idx] = '\0';
+    decodificar_texto_morse(raiz, linha, resultado, erros);
 
     printf("\nTexto decodificado: %s\n", resultado);
 
-    if (erros_idx > 0) {
+    if (strlen(erros) > 0) {
         printf("\n");
-        for (int i = 0; i < erros_idx; i++) {
+        for (int i = 0; erros[i] != '\0'; i++) {
             printf("[Aviso: caractere invalido '%c' ignorado]\n", erros[i]);
         }
     }
@@ -139,20 +94,7 @@ void executar_codificar_terminal(MorseNode *raiz) {
     }
 
     printf("\nTexto em Morse:\n");
-    char buffer_codigo[16];
-
-    for (int i = 0; texto[i] != '\0'; i++) {
-        if (texto[i] == ' ') {
-            printf("/ ");
-        } else {
-            if (codificar_caractere_pela_arvore(raiz, texto[i], buffer_codigo)) {
-                printf("%s ", buffer_codigo);
-            } else {
-                printf("? ");
-            }
-        }
-    }
-    printf("\n");
+    codificar_texto_para_morse(raiz, texto);
 }
 
 void executar_decodificar_arquivo(MorseNode *raiz) {
@@ -198,7 +140,6 @@ int main(void) {
         }
         limpar_buffer();
 
-        // limpa tela logo apos usuario escolher opcao
         limpar_tela();
 
         switch (opcao_principal) {
