@@ -81,5 +81,5 @@ const char* obter_codigo_morse(char c) {
             return TABELA_MORSE[i].codigo;
         }
     }
-    return NULL; // Caractere não suportado
+    return 0; // Caractere não suportado
 }
